@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Biblioteca</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+        }
+
+        header {
+            background-color: #6c63ff;
+            padding: 15px;
+            color: white;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #biblioteca {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .anime-card {
+            background-color: #fff;
+            width: 250px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .anime-card img {
+            width: 100%;
+            border-bottom: 2px solid #f5f5f5;
+        }
+
+        .anime-card div {
+            padding: 15px;
+        }
+
+        .anime-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .anime-card p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        a {
+            text-decoration: none;
+            color: #6c63ff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Mi Biblioteca</h1>
+    </header>
+
+    <main>
+        <div id="biblioteca">
+            {% if biblioteca %}
+                {% for anime in biblioteca %}
+                    <div class="anime-card">
+                        <img src="{{ anime.imagen }}" alt="{{ anime.nombre }}">
+                        <div>
+                            <h3>{{ anime.nombre }}</h3>
+                            <p><strong>Calificación:</strong> {{ anime.calificacion }}</p>
+                            <p>{{ anime.resumen }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No tienes animes en tu biblioteca.</p>
+            {% endif %}
+        </div>
+
+        <a href="{% if request.args.get('tipo') %}{{ url_for('recomendar', tipo=request.args.get('tipo'), calificacion=request.args.get('calificacion', '5'), estado=request.args.get('estado', 'completado')) }}{% else %}{{ url_for('index') }}{% endif %}">Volver</a>
+
+    </main>
+</body>
+</html>

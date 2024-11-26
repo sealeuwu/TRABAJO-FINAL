@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendaciones de Anime</title>
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            margin: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden; 
+        }
+
+        header {
+            background-color: #6c63ff;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px; 
+        }
+
+        .top-bar {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            padding-left: 1650px;
+        }
+
+        .top-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            margin-left: 20px; 
+        }
+
+        .top-bar a:hover {
+            text-decoration: underline;
+        }
+
+        #lista-recomendaciones {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            gap: 20px; 
+            width: 100%;
+            flex-grow: 1;
+            max-width: 100%; 
+            margin: 0 auto;
+            max-height: 80vh; 
+            overflow-y: scroll; 
+        }
+
+        .recomendacion {
+            background-color: #ffffff;
+            border-radius: 11px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 320px; 
+            height: 450px; 
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .recomendacion:hover {
+            transform: scale(1.05);
+        }
+
+        .recomendacion img {
+            width: 120px; 
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .recomendacion-content {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: left;
+            width: 100%;
+        }
+
+        .recomendacion-content h3 {
+            margin: 5px 0;
+            font-size: 16px; 
+            color: #333;
+        }
+
+        .recomendacion-content p {
+            color: #666;
+            font-size: 12px; 
+            margin-bottom: 10px;
+        }
+
+        .recomendacion-content .calificacion,
+        .recomendacion-content .estado {
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            margin-top: auto; 
+        }
+
+        a {
+            text-decoration: none;
+            color: #6c63ff;
+            font-size: 14px; 
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            background-color: #6c63ff;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 12px; /* Reducir tamaño de fuente */
+        }
+
+        button:hover {
+            background-color: #5849d8;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Recomendaciones</h1>
+    </header>
+
+    <!-- Barra superior con los botones -->
+    <div class="top-bar">
+        {% if session.get('user') %}
+            <a href="{{ url_for('biblioteca') }}">Mi Biblioteca</a>
+            <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+        {% endif %}
+    </div>
+
+    <main>
+        <div id="lista-recomendaciones">
+            {% if recomendaciones %}
+                {% for anime in recomendaciones %}
+                    <div class="recomendacion">
+                        <img src="{{ anime.imagen }}" alt="{{ anime.nombre }}">
+                        <div class="recomendacion-content">
+                            <h3>{{ anime.nombre }}</h3>
+                            <p><strong>Calificación:</strong> <span class="calificacion">{{ anime.calificacion }}</span></p>
+                            <p><strong>Estado:</strong> <span class="estado">{{ anime.estado }}</span></p>
+                            <p>{{ anime.resumen }}</p>
+                            <a href="{{ anime.link }}" target="_blank">Ver más</a>
+                            {% if session.get('user') %}
+                                <form action="{{ url_for('agregar_a_biblioteca', nombre_anime=anime.nombre) }}" method="GET">
+                                    <button type="submit">Agregar a mi Biblioteca</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No se encontraron animes que coincidan con tus criterios.</p>
+            {% endif %}
+        </div>
+        <a href="{% if 'biblioteca' in request.referrer %}{{ url_for('index') }}{% else %}{{ url_for('recomendar', tipo=request.args.get('tipo', 'random'), calificacion=request.args.get('calificacion', '5'), estado=request.args.get('estado', 'completado')) }}{% endif %}">Volver</a>
+    </main>
+
+    <footer>
+        <p></p>
+    </footer>
+</body>
+</html>

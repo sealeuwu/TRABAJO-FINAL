@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendador de Anime</title>
+    <script>
+        function validarFormulario() {
+            const calificacion = document.getElementById('calificacion').value;
+
+            if (!calificacion) {
+                alert("Por favor, elige un número para la calificación.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        .navbar {
+            background-color: #6c63ff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .navbar .title {
+            font-size: 24px;
+        }
+
+        .navbar .user-info a {
+            color: white;
+            margin-left: 10px;
+            text-decoration: none;
+        }
+
+        .navbar .user-info a:hover {
+            text-decoration: underline;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #8e85ce;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        form label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        form input, form select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        form button {
+            width: 100%;
+            padding: 12px;
+            background-color: #6c63ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #5849d8;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <h1 class="title">Recomendador de Anime</h1>
+        {% if session.get('user') %}
+            <div class="user-info">
+                <span>Bienvenido, {{ session['user'] }}</span>
+                <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+                <a href="{{ url_for('biblioteca') }}">Mi Biblioteca</a>
+            </div>
+        {% else %}
+            <div class="user-info">
+                <a href="{{ url_for('login') }}">Iniciar sesión</a>
+                <a href="{{ url_for('register') }}">Registrarse</a>
+            </div>
+        {% endif %}
+    </div>
+    <form action="{{ url_for('recomendar') }}" method="GET" onsubmit="return validarFormulario()">
+        <label for="tipo">Tipo de Anime:</label>
+        <select name="tipo" id="tipo">
+            <option value="acción">Acción</option>
+            <option value="aventura">Aventura</option>
+            <option value="comedia">Comedia</option>
+            <option value="romance">Romance</option>
+            <option value="deportes">Deportes</option>
+            <option value="sobrenatural">Sobrenatural</option>
+            <option value="psicológico">Psicológico</option>
+            <option value="melancolicas">Melancólico</option>
+            <option value="random">Random</option>
+        </select>
+        <br>
+        <label for="calificacion">Calificación mínima (1-5):</label>
+        <input type="number" name="calificacion" id="calificacion" min="1" max="5">
+        
+        <label for="estado">Estado:</label>
+        <select name="estado" id="estado">
+            <option value="completado">Completado</option>
+            <option value="en_emision">En emisión</option>
+        </select>
+        <br>
+        <button type="submit">Obtener Recomendaciones</button>
+    </form>
+</body>
+</html>
